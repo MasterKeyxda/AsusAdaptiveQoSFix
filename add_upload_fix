@@ -5,7 +5,7 @@ logmsg() {
 	fi
 	logger -t "${SCRIPTNAME_DISPLAY}" "$*"
 }
-
+readonly SCRIPTNAME_DISPLAY="AQoS_Upload_Fix"
 #lock to avoid running script 3x
 lockfile="/tmp/add_upload_fix.lock"
 exec 100>"$lockfile"
