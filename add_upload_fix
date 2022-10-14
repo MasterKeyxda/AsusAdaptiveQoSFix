@@ -22,7 +22,7 @@ do
     set -- $temp_upload_filter"" 
     match_id=$(eval echo \${$iterator})
     set -- $temp_upload_flowid""
-    flow_id=$(eval echo \${$iterator})
+    flow_id=$(eval echo \${$((iterator+1))})
     eval tc filter add dev $wan_interface protocol all prio 99 u32 match mark $match_id flowid $flow_id
     #printf '%s\n' $preference
     iterator=$(( $iterator + 1 ))
