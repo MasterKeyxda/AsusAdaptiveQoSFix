@@ -1,5 +1,18 @@
 #!/bin/sh
-#sleep 1
+logmsg() {
+	if [ "$#" = "0" ]; then
+		return
+	fi
+	logger -t "${SCRIPTNAME_DISPLAY}" "$*"
+}
+
+#lock to avoid running script 3x
+lockfile="/tmp/add_upload_fix.lock"
+exec 100>"$lockfile"
+if ! flock -n 100; then exit 0; fi
+
+sleep 30 # Needed to avoid mismatch of flowid and mark
+
 wan_interface=$(nvram get wan_ifnames)
 lan_interface=$(nvram get lan_ifname)
 temp_upload_filter=$(tc filter show dev $lan_interface |  sed -n 's/.*mark\(.*\)(succ.*/\1/p')
@@ -15,7 +28,7 @@ set -o noglob     # disable glob
 #set -- $temp_upload_flowid"" # split+glob with glob disabled.
 #echo "$# elements:"
 #printf ' - "%s"\n' "${1}"
-
+logmsg "Starting Upload QoS Fix"
 iterator=1
 while [ $iterator -le $temp_num_upload_filter ]
 do
@@ -31,3 +44,4 @@ done
 #Catchall
 tc filter add dev $wan_interface protocol all prio 99 u32 match u32 0 0 flowid 1:14
 tc filter add dev $lan_interface protocol all prio 99 u32 match u32 0 0 flowid 1:14
+logmsg "Completed Upload QoS Fix"
