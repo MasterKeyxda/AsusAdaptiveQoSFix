@@ -1,0 +1,33 @@
+#!/bin/sh
+#sleep 1
+wan_interface=$(nvram get wan_ifnames)
+lan_interface=$(nvram get lan_ifname)
+temp_upload_filter=$(tc filter show dev $lan_interface |  sed -n 's/.*mark\(.*\)(succ.*/\1/p')
+temp_upload_flowid=$(tc filter show dev $lan_interface |  sed -n 's/.*flowid//p')
+temp_num_upload_filter=$(echo "$temp_upload_filter" | wc -l)
+
+IFS=$'\n'             # split on .
+set -o noglob     # disable glob
+#set -- $temp_upload_filter # split+glob with glob disabled.
+#echo "$# elements:"
+#printf ' - "%s"\n' "${@}"
+
+#set -- $temp_upload_flowid"" # split+glob with glob disabled.
+#echo "$# elements:"
+#printf ' - "%s"\n' "${1}"
+
+iterator=1
+while [ $iterator -le $temp_num_upload_filter ]
+do
+    set -- $temp_upload_filter"" 
+    match_id=$(eval echo \${$iterator})
+    set -- $temp_upload_flowid""
+    flow_id=$(eval echo \${$iterator})
+    eval tc filter add dev $wan_interface protocol all prio 99 u32 match mark $match_id flowid $flow_id
+    #printf '%s\n' $flow_id
+    iterator=$(( $iterator + 1 ))
+done
+
+#Catchall
+tc filter add dev eth0 protocol all prio 99 u32 match u32 0 0 flowid 1:14
+tc filter add dev br0 protocol all prio 99 u32 match u32 0 0 flowid 1:14
