@@ -10,7 +10,7 @@ readonly SCRIPTNAME_DISPLAY="AQoS_Upload_Fix"
 lockfile="/tmp/add_upload_fix.lock"
 exec 100>"$lockfile"
 if ! flock -n 100; then exit 0; fi
-
+if [ "$(nvram get qos_type)" != "1" ]; then exit 0; fi
 sleep 30 # Needed to avoid mismatch of flowid and mark
 
 wan_interface=$(nvram get wan_ifnames)
