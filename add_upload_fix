@@ -29,5 +29,5 @@ do
 done
 
 #Catchall
-tc filter add dev eth0 protocol all prio 99 u32 match u32 0 0 flowid 1:14
-tc filter add dev br0 protocol all prio 99 u32 match u32 0 0 flowid 1:14
+tc filter add dev $wan_interface protocol all prio 99 u32 match u32 0 0 flowid 1:14
+tc filter add dev $lan_interface protocol all prio 99 u32 match u32 0 0 flowid 1:14
