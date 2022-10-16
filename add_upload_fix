@@ -14,7 +14,7 @@ if ! flock -n 100; then exit 0; fi
 
 sleep 30 # Needed to avoid mismatch of flowid and mark
 
-wan_interface=$(nvram get wan_ifname)
+wan_interface=$(nvram get wan_ifnames)
 lan_interface=$(nvram get lan_ifname)
 temp_upload_filter=$(tc filter show dev $lan_interface |  sed -n 's/.*mark\(.*\)(succ.*/\1/p')
 temp_upload_flowid=$(tc filter show dev $lan_interface |  sed -n 's/.*flowid//p')
