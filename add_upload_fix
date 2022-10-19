@@ -5,7 +5,7 @@ logmsg() {
 	fi
 	logger -t "${SCRIPTNAME_DISPLAY}" "$*"
 }
-if [ "$(nvram get qos_type)" != "1" ]; then exit 0; fi # Check Adaptive QoS enabled first
+if [ "$(nvram get qos_enable)" != "1" ] || [ "$(nvram get qos_type)" != "1" ]; then exit 0; fi # Check Adaptive QoS enabled first
 readonly SCRIPTNAME_DISPLAY="AQoS_Upload_Fix"
 #lock to avoid running script 3x
 lockfile="/tmp/add_upload_fix.lock"
