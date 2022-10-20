@@ -1,3 +1,4 @@
 #!/bin/sh
 execute_line='is_fix_active=$(tc filter show dev $(nvram get wan0_ifnames) prio 99) \nif [ -z "$is_fix_active" ]; then { sh ./jffs/scripts/add_upload_fix & }; fi '
 echo -e $execute_line >> /jffs/scripts/firewall-start
+echo -e $execute_line >> /jffs/scripts/service-event-end
